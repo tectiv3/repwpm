@@ -244,3 +244,23 @@ func nextWallpaper() error {
 	log.Println(prettyOutput)
 	return nil
 }
+
+func getWallpapers(notify bool) {
+	total, result := downloadNewWallpapers()
+	if !notify {
+		return
+	}
+	if total > 0 {
+		app.NewNotification(app.NotificationConfig{
+			Title: "r/EarthPorn Wallpapers",
+			Text:  result,
+			Sound: false,
+		})
+	} else {
+		app.NewNotification(app.NotificationConfig{
+			Title: "r/EarthPorn Wallpapers",
+			Text:  "No new wallpapers",
+			Sound: false,
+		})
+	}
+}
