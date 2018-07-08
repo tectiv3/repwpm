@@ -12,3 +12,5 @@ goapp mac build -bundle
 # Launch:
 open repwpm.app
 ```
+## Screenshot
+![screenshot](/screenshot.png?raw=true)
