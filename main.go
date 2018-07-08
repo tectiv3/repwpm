@@ -13,10 +13,11 @@ func main() {
 
 	app.Run(&mac.Driver{
 		Bundle: mac.Bundle{
-			AppName:    "repwpm", //r/earthporn wallpaper menu
-			Version:    "0.0.1",
-			Background: true,
-			Icon:       "icon.png",
+			AppName:          "repwpm", //r/earthporn wallpaper menu
+			Version:          "0.0.2",
+			Background:       true,
+			Icon:             "icon.png",
+			DeploymentTarget: "10.11",
 		},
 
 		OnRun: func() {
@@ -76,6 +77,12 @@ func (m *Menu) OnGetNew() {
 			Text:  "No new wallpapers",
 			Sound: false,
 		})
+	}
+}
+
+func (m *Menu) OnNext() {
+	if err := nextWallpaper(); err != nil {
+		app.Log(err.Error())
 	}
 }
 

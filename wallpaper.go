@@ -10,9 +10,12 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
 	"path"
 	"strings"
 	"time"
+
+	"github.com/murlokswarm/app"
 )
 
 const (
@@ -217,6 +220,27 @@ func isInvalid(pictureFileName string) bool {
 		log.Printf("%s: %v\n", path.Base(pictureFileName), err)
 		return true
 	}
-	log.Printf("%s %d %d\n", path.Base(pictureFileName), im.Width, im.Height)
+	app.Log("%s %d %d\n", path.Base(pictureFileName), im.Width, im.Height)
 	return (im.Height > im.Width || im.Width < 1920 || im.Height < 1080)
+}
+
+func nextWallpaper() error {
+	command := `
+    tell application "System Events"
+        tell current desktop
+            set initInterval to get change interval
+            set change interval to initInterval
+         end tell
+    end tell
+    `
+	cmd := exec.Command("osascript", "-e", command)
+	output, err := cmd.CombinedOutput()
+	prettyOutput := strings.Replace(string(output), "\n", "", -1)
+
+	// Ignore errors from the user hitting the cancel button
+	if err != nil && strings.Index(string(output), "User canceled.") < 0 {
+		return fmt.Errorf(err.Error() + ": " + prettyOutput + " (" + command + ")")
+	}
+	log.Println(prettyOutput)
+	return nil
 }
